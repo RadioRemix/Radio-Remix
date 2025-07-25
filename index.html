@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Remix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .playing-animation {
+            animation: pulse 1.5s infinite;
+        }
+        .iphone-frame {
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar {
+            height: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .home-indicator {
+            width: 100px;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+        .volume-slider {
+            -webkit-appearance: none;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .wave {
+            position: relative;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wave-bar {
+            width: 4px;
+            height: 20px;
+            margin: 0 2px;
+            background: linear-gradient(to top, #3B82F6, #60A5FA);
+            border-radius: 2px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.5); }
+        }
+        .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="iphone-frame bg-black w-full max-w-md mx-auto">
+        <!-- iPhone Status Bar -->
+        <div class="status-bar flex items-center justify-between px-5 text-white text-xs">
+            <span>9:41</span>
+            <div class="flex space-x-2">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- App Content -->
+        <div class="bg-gradient-to-b from-green-500 to-black text-white p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <button class="text-gray-300">
+                    <i class="fas fa-chevron-left text-xl"></i>
+                </button>
+                <h1 class="text-xl font-bold">www.radioremix.it</h1>
+                <button class="text-gray-300">
+                    <i class="fas fa-ellipsis-h text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Logo and Station Info -->
+            <div class="flex flex-col items-center mb-10">
+                <div class="w-48 h-48 bg-gradient-to-br from-red-600 to-black-600 rounded-full flex items-center justify-center shadow-lg mb-6">
+                    <img src="logo-radio.png" alt="Radio Remix Logo" class="w-40 h-40 rounded-full border-4 border-white">
+                </div>
+                <h2 class="text-2xl font-bold mb-1">Radio Remix</h2>
+                <p class="text-gray-300">Musica meglio dell'originale</p>
+            </div>
+
+            <!-- Wave Animation -->
+            <div class="wave mb-8" id="wave-animation">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="bg-gray-800 bg-opacity-50 rounded-2xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <button class="text-gray-300 hover:text-white">
+                        <i class="fas fa-backward text-2xl"></i>
+                    </button>
+                    <button id="play-btn" class="bg-green-500 hover:bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-play text-2xl"></i>
+                    </button>
+                    <button class="text-gray-300 hover:text-white">
+                        <i class="fas fa-forward text-2xl"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between text-sm text-gray-300 mb-2">
+                    <span id="current-time">0:00</span>
+                    <span>LIVE</span>
+                </div>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="flex items-center space-x-3 mb-8">
+                <i class="fas fa-volume-down text-gray-300"></i>
+                <input type="range" min="0" max="100" value="70" class="volume-slider flex-1">
+                <i class="fas fa-volume-up text-gray-300"></i>
+            </div>
+
+            <!-- Social Links -->
+            <div class="flex justify-center space-x-6 text-gray-300">
+                <a href="https://www.facebook.com/radioremix.it/" class="hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="https://x.com/FabioFDeeJay" class="hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="https://www.instagram.com/radioremix2024/" class="hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="https://www.tiktok.com/@radio.remix1?_t=ZN-8uBeMkUNJvK&_r=1" class="hover:text-white"><i class="fab fa-tiktok text-xl"></i></a>
+		<a href="https://t.me/RadioRemix2024" class="hover:text-white"><i class="fab fa-telegram text-xl"></i></a>
+		<a href="https://www.linkedin.com/in/radio-remix-737a89370/" class="hover:text-white"><i class="fab fa-linkedin text-xl"></i></a>
+		<a href="https://www.youtube.com/@RadioRemix2024" class="hover:text-white"><i class="fab fa-youtube text-xl"></i></a>
+		<a href="info@radioremix.it" class="hover:text-white"><i class="fab fa-email text-xl"></i></a>
+            </div>
+        </div>
+
+        <!-- iPhone Home Indicator -->
+        <div class="flex justify-center pb-4">
+            <div class="home-indicator"></div>
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="radio-stream" src="https://sr11.inmystream.it/proxy/radiorem?mp=/stream"></audio>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('radio-stream');
+            const playBtn = document.getElementById('play-btn');
+            const waveAnimation = document.getElementById('wave-animation');
+            const currentTimeDisplay = document.getElementById('current-time');
+            
+            let isPlaying = false;
+            
+            // Toggle play/pause
+            playBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    audio.pause();
+                    playBtn.innerHTML = '<i class="fas fa-play text-2xl"></i>';
+                    waveAnimation.style.display = 'none';
+                } else {
+                    audio.play();
+                    playBtn.innerHTML = '<i class="fas fa-pause text-2xl"></i>';
+                    waveAnimation.style.display = 'flex';
+                }
+                isPlaying = !isPlaying;
+                playBtn.classList.toggle('playing-animation');
+            });
+            
+            // Update current time (simulated for live radio)
+            setInterval(() => {
+                if (isPlaying) {
+                    const now = new Date();
+                    currentTimeDisplay.textContent = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+            
+            // Volume control
+            const volumeSlider = document.querySelector('.volume-slider');
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = this.value / 100;
+            });
+            
+            // Set initial volume
+            audio.volume = volumeSlider.value / 100;
+            
+            // Hide wave animation initially
+            waveAnimation.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
